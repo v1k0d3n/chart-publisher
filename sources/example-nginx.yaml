@@ -3,7 +3,7 @@
 
 # Repository URL (Helm repository)
 repo_url: https://github.com/kubernetes/ingress-nginx
-chart_path: helm/ingress-nginx
+chart_path: charts/ingress-nginx
 ref: helm-chart-4.31.1
 
 # Specific version to fetch
