@@ -105,16 +105,16 @@ fetch-chart: ## Fetch chart from source repository
 			echo "Debug: Trying to find charts directory:"; \
 			find . -name "charts" -type d 2>/dev/null || echo "No charts directory found"; \
 		fi; \
-		cd /home/runner/work/charts/charts; \
-		echo "Debug: Copying from .temp/$(CHART)-src/$$chart_path to .temp/$(CHART)"; \
-		if [ -d ".temp/$(CHART)-src/$$chart_path" ]; then \
-			cp -r .temp/$(CHART)-src/$$chart_path .temp/$(CHART); \
+		cd $(PWD); \
+		echo "Debug: Copying from $(TEMP_DIR)/$(CHART)-src/$$chart_path to $(TEMP_DIR)/$(CHART)"; \
+		if [ -d "$(TEMP_DIR)/$(CHART)-src/$$chart_path" ]; then \
+			cp -r $(TEMP_DIR)/$(CHART)-src/$$chart_path $(TEMP_DIR)/$(CHART); \
 			echo "Debug: Contents of destination directory:"; \
-			ls -la .temp/$(CHART)/; \
+			ls -la $(TEMP_DIR)/$(CHART)/; \
 		else \
-			echo "Error: Chart path .temp/$(CHART)-src/$$chart_path does not exist"; \
-			echo "Debug: Available paths in .temp/$(CHART)-src:"; \
-			ls -la .temp/$(CHART)-src/; \
+			echo "Error: Chart path $(TEMP_DIR)/$(CHART)-src/$$chart_path does not exist"; \
+			echo "Debug: Available paths in $(TEMP_DIR)/$(CHART)-src:"; \
+			ls -la $(TEMP_DIR)/$(CHART)-src/; \
 			exit 1; \
 		fi; \
 	else \
