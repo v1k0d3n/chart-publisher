@@ -2,8 +2,10 @@
 # This Makefile manages fetching, packaging, and publishing Helm charts
 
 # Configuration
-REPO_NAME := YOUR_GITHUB_USERNAME
-REPO_URL := https://$(REPO_NAME).github.io/charts
+# Update these values for your repository
+GITHUB_USERNAME := YOUR_GITHUB_USERNAME
+REPO_NAME := YOUR_REPO_NAME
+REPO_URL := https://$(GITHUB_USERNAME).github.io/$(REPO_NAME)
 CHARTS_DIR := charts
 SOURCES_DIR := sources
 TEMP_DIR := .temp
