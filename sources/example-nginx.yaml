@@ -1,0 +1,36 @@
+# Example nginx chart configuration
+# This is a simple example that users can easily modify
+
+# Repository URL (Helm repository)
+repo_url: https://kubernetes.github.io/ingress-nginx
+
+# Specific version to fetch
+version: 4.7.1
+
+# Optional: Override chart metadata
+chart_overrides:
+  description: "NGINX Ingress Controller for Kubernetes - Example Configuration"
+  keywords:
+    - ingress
+    - nginx
+    - kubernetes
+    - example
+  maintainers:
+    - name: "Your Name"
+      email: "your.email@example.com"
+  home: "https://kubernetes.github.io/ingress-nginx/"
+  sources:
+    - "https://github.com/kubernetes/ingress-nginx"
+
+# Optional: Override default values
+values_overrides:
+  # Uncomment and modify these values as needed
+  # controller:
+  #   replicaCount: 2
+  #   resources:
+  #     limits:
+  #       memory: "512Mi"
+  #       cpu: "500m"
+  #     requests:
+  #       memory: "256Mi"
+  #       cpu: "250m"
