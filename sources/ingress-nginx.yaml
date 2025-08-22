@@ -4,10 +4,11 @@
 # Repository URL (Git repository)
 repo_url: https://github.com/kubernetes/ingress-nginx
 chart_path: charts/ingress-nginx
-ref: helm-chart-4.31.1
+ref: helm-chart-4.13.1
 
 # Note: When using Git repositories, use 'ref' instead of 'version'
 # The ref can be a branch, tag, or commit hash
+# Using a specific tag that exists in the repository
 
 # Optional: Override chart metadata
 chart_overrides:

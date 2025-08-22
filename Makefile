@@ -71,7 +71,21 @@ fetch-chart: ## Fetch chart from source repository
 		echo "Fetching from git ref $$ref"; \
 		rm -rf $(TEMP_DIR)/$(CHART)-src; \
 		git clone $$repo_url $(TEMP_DIR)/$(CHART)-src; \
-		cd $(TEMP_DIR)/$(CHART)-src && git checkout $$ref; \
+		cd $(TEMP_DIR)/$(CHART)-src; \
+		echo "Debug: Available refs:"; \
+		git branch -a; \
+		git tag -l | head -10; \
+		echo "Debug: Attempting to checkout $$ref"; \
+		if git checkout $$ref; then \
+			echo "Debug: Successfully checked out $$ref"; \
+		else \
+			echo "Error: Failed to checkout ref $$ref"; \
+			echo "Available branches:"; \
+			git branch -a; \
+			echo "Available tags:"; \
+			git tag -l | head -20; \
+			exit 1; \
+		fi; \
 		echo "Debug: Current directory: $$(pwd)"; \
 		echo "Debug: Git status:"; \
 		git status; \
@@ -88,12 +102,21 @@ fetch-chart: ## Fetch chart from source repository
 			ls -la; \
 			echo "Debug: Trying to find helm directory:"; \
 			find . -name "helm" -type d 2>/dev/null || echo "No helm directory found"; \
+			echo "Debug: Trying to find charts directory:"; \
+			find . -name "charts" -type d 2>/dev/null || echo "No charts directory found"; \
 		fi; \
 		cd /home/runner/work/charts/charts; \
 		echo "Debug: Copying from .temp/$(CHART)-src/$$chart_path to .temp/$(CHART)"; \
-		cp -r .temp/$(CHART)-src/$$chart_path .temp/$(CHART); \
-		echo "Debug: Contents of destination directory:"; \
-		ls -la .temp/$(CHART)/; \
+		if [ -d ".temp/$(CHART)-src/$$chart_path" ]; then \
+			cp -r .temp/$(CHART)-src/$$chart_path .temp/$(CHART); \
+			echo "Debug: Contents of destination directory:"; \
+			ls -la .temp/$(CHART)/; \
+		else \
+			echo "Error: Chart path .temp/$(CHART)-src/$$chart_path does not exist"; \
+			echo "Debug: Available paths in .temp/$(CHART)-src:"; \
+			ls -la .temp/$(CHART)-src/; \
+			exit 1; \
+		fi; \
 	else \
 		echo "Fetching latest version"; \
 		helm pull $$repo_url/$(CHART) --untar --untardir $(TEMP_DIR); \
