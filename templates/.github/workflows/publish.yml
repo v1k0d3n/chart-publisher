@@ -36,7 +36,10 @@ jobs:
       run: make init
 
     - name: Update charts
-      run: make update-charts
+      run: |
+        # Set the working directory to match the expected path in Makefile
+        cd /home/runner/work/charts/charts || true
+        make update-charts
 
     - name: Update repository index
       run: make index

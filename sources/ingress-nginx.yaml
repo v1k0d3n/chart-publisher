@@ -1,13 +1,13 @@
 # Example nginx chart configuration
 # This is a simple example that users can easily modify
 
-# Repository URL (Helm repository)
+# Repository URL (Git repository)
 repo_url: https://github.com/kubernetes/ingress-nginx
 chart_path: charts/ingress-nginx
 ref: helm-chart-4.31.1
 
-# Specific version to fetch
-version: 4.31.1
+# Note: When using Git repositories, use 'ref' instead of 'version'
+# The ref can be a branch, tag, or commit hash
 
 # Optional: Override chart metadata
 chart_overrides:

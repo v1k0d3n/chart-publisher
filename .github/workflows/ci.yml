@@ -55,4 +55,22 @@ jobs:
         make help
         make init
         
+        # Test the fetch logic without actually downloading
+        echo "Testing fetch logic..."
+        for config in sources/*.yaml; do
+          if [ -f "$config" ]; then
+            chart_name=$(basename "$config" .yaml)
+            echo "Testing configuration for: $chart_name"
+            # Parse the config to see if it's valid
+            repo_url=$(grep '^repo_url:' "$config" | cut -d' ' -f2)
+            chart_path=$(grep '^chart_path:' "$config" | cut -d' ' -f2)
+            version=$(grep '^version:' "$config" | cut -d' ' -f2)
+            ref=$(grep '^ref:' "$config" | cut -d' ' -f2)
+            echo "  repo_url: $repo_url"
+            echo "  chart_path: $chart_path"
+            echo "  version: $version"
+            echo "  ref: $ref"
+          fi
+        done
+        
         echo "✓ All tests passed"

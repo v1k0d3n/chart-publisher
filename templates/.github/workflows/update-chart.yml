@@ -41,6 +41,8 @@ jobs:
 
     - name: Update specific chart
       run: |
+        # Set the working directory to match the expected path in Makefile
+        cd /home/runner/work/charts/charts || true
         if [ -n "${{ github.event.inputs.version }}" ]; then
           # Update the version in the source config
           sed -i "s/^version: .*/version: ${{ github.event.inputs.version }}/" sources/${{ github.event.inputs.chart }}.yaml

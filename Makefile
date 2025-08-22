@@ -72,8 +72,28 @@ fetch-chart: ## Fetch chart from source repository
 		rm -rf $(TEMP_DIR)/$(CHART)-src; \
 		git clone $$repo_url $(TEMP_DIR)/$(CHART)-src; \
 		cd $(TEMP_DIR)/$(CHART)-src && git checkout $$ref; \
+		echo "Debug: Current directory: $$(pwd)"; \
+		echo "Debug: Git status:"; \
+		git status; \
+		echo "Debug: Git branch:"; \
+		git branch -a; \
+		echo "Debug: Contents of cloned repository:"; \
+		ls -la; \
+		echo "Debug: Looking for chart_path: $$chart_path"; \
+		if [ -d "$$chart_path" ]; then \
+			echo "Debug: Chart path found!"; \
+			ls -la "$$chart_path"; \
+		else \
+			echo "Debug: Chart path not found. Available directories:"; \
+			ls -la; \
+			echo "Debug: Trying to find helm directory:"; \
+			find . -name "helm" -type d 2>/dev/null || echo "No helm directory found"; \
+		fi; \
 		cd /home/runner/work/charts/charts; \
+		echo "Debug: Copying from .temp/$(CHART)-src/$$chart_path to .temp/$(CHART)"; \
 		cp -r .temp/$(CHART)-src/$$chart_path .temp/$(CHART); \
+		echo "Debug: Contents of destination directory:"; \
+		ls -la .temp/$(CHART)/; \
 	else \
 		echo "Fetching latest version"; \
 		helm pull $$repo_url/$(CHART) --untar --untardir $(TEMP_DIR); \
@@ -158,10 +178,16 @@ apply-overrides: ## Apply values and chart metadata overrides
 		if grep -q "values_overrides:" "$(SOURCES_DIR)/$(CHART).yaml"; then \
 			echo "Applying values overrides..."; \
 			if [ -f "$(TEMP_DIR)/$(CHART)/values.yaml" ]; then \
+				echo "Debug: Original values.yaml content:"; \
+				head -20 "$(TEMP_DIR)/$(CHART)/values.yaml"; \
+				echo "Debug: Override content:"; \
+				yq eval '.values_overrides' "$(SOURCES_DIR)/$(CHART).yaml"; \
 				yq eval-all 'select(fileIndex == 1) * select(fileIndex == 0).values_overrides' \
 					"$(SOURCES_DIR)/$(CHART).yaml" \
 					"$(TEMP_DIR)/$(CHART)/values.yaml" > "$(TEMP_DIR)/$(CHART)/values.yaml.tmp" && \
 				mv "$(TEMP_DIR)/$(CHART)/values.yaml.tmp" "$(TEMP_DIR)/$(CHART)/values.yaml"; \
+				echo "Debug: Modified values.yaml content:"; \
+				head -20 "$(TEMP_DIR)/$(CHART)/values.yaml"; \
 				echo "Values overrides applied successfully"; \
 			else \
 				echo "Warning: values.yaml not found, skipping values overrides"; \
@@ -171,10 +197,16 @@ apply-overrides: ## Apply values and chart metadata overrides
 		if grep -q "chart_overrides:" "$(SOURCES_DIR)/$(CHART).yaml"; then \
 			echo "Applying chart metadata overrides..."; \
 			if [ -f "$(TEMP_DIR)/$(CHART)/Chart.yaml" ]; then \
+				echo "Debug: Original Chart.yaml content:"; \
+				head -10 "$(TEMP_DIR)/$(CHART)/Chart.yaml"; \
+				echo "Debug: Override content:"; \
+				yq eval '.chart_overrides' "$(SOURCES_DIR)/$(CHART).yaml"; \
 				yq eval-all 'select(fileIndex == 1) * select(fileIndex == 0).chart_overrides' \
 					"$(SOURCES_DIR)/$(CHART).yaml" \
 					"$(TEMP_DIR)/$(CHART)/Chart.yaml" > "$(TEMP_DIR)/$(CHART)/Chart.yaml.tmp" && \
 				mv "$(TEMP_DIR)/$(CHART)/Chart.yaml.tmp" "$(TEMP_DIR)/$(CHART)/Chart.yaml"; \
+				echo "Debug: Modified Chart.yaml content:"; \
+				head -10 "$(TEMP_DIR)/$(CHART)/Chart.yaml"; \
 				echo "Chart metadata overrides applied successfully"; \
 			else \
 				echo "Warning: Chart.yaml not found, skipping chart metadata overrides"; \
